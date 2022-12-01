@@ -52,7 +52,7 @@ def index():
     genre_names = list(genre_counts.index)
     
     # Top 5 categories
-    top_category_count = df.iloc[:,4:].sum().sort_values(ascending=False)[1:6]
+    top_category_count = df.iloc[:,4:].sum().sort_values(ascending=False)[1:11]
     top_category_names = list(top_category_count.index)
     
     # create visuals
@@ -85,7 +85,7 @@ def index():
             ],
 
             'layout': {
-                'title': 'Top Ten Categories',
+                'title': 'Top 10 Categories',
                 'yaxis': {
                     'title': "Count"
                 },
