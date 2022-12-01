@@ -33,6 +33,9 @@ def clean_data(df):
     # create a dataframe of the 36 individual category columns by categories
     categories = pd.DataFrame([map(int,i) for i in values], columns = cols)
     
+    # drop malformed values
+    categories = categories[categories.related != 2]
+    
     # drop the original categories column from `df`
     df = df.drop('categories',1)
 
