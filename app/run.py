@@ -1,12 +1,9 @@
 import json
 import plotly
 import pandas as pd
-# download necessary NLTK data
-import nltk
-nltk.download(['punkt', 'wordnet','stopwords'])
+
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
 
 from flask import Flask
 from flask import render_template, request, jsonify
@@ -19,7 +16,7 @@ app = Flask(__name__)
 
 def tokenize(text):
     """
-        This function tokenizes train data
+        This function tokenizes train data: Remove special characters, Upper case -> lower, Remove stopwords
         input: text
         output: tokens of text
     """
@@ -33,9 +30,12 @@ def tokenize(text):
         if tok not in stopwords.words("english"):
             clean_tokens.append(clean_tok)
 
+    return clean_tokens
+
+
 # load data
-engine = create_engine('sqlite:///data/DisasterResponse.db')
-df = pd.read_sql_table('clean_data.csv', engine)
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('cleaned_data.csv', engine)
 
 # load model
 model = joblib.load("../models/classifier.pkl")
@@ -44,15 +44,18 @@ model = joblib.load("../models/classifier.pkl")
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
+
 def index():
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    # Top 5 categories
+    top_category_count = df.iloc[:,4:].sum().sort_values(ascending=False)[1:6]
+    top_category_names = list(top_category_count.index)
+    
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
@@ -71,6 +74,25 @@ def index():
                     'title': "Genre"
                 }
             }
+        },
+
+        {
+            'data': [
+                Bar(
+                    x=top_category_names,
+                    y=top_category_count
+                )
+            ],
+
+            'layout': {
+                'title': 'Top Ten Categories',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Categories"
+                }
+            }
         }
     ]
     
@@ -80,7 +102,6 @@ def index():
     
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
-
 
 # web page that handles user query and displays model results
 @app.route('/go')
