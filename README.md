@@ -1,5 +1,6 @@
 # Disaster Response Pipeline Project
 ## Introduction
+The project can be deployed for classifying disaster and analysing the data.
 The project create a mocked disaster response pipeline from cleaning data, preprocessing data, training model and evaluating the classification. We're going to use text described the situations, tokenizing and using them for training model. By running web demo, we can see how the model classifies a situation and analyse the data as well
 ## Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
